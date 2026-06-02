@@ -32,8 +32,11 @@ import { useCart } from "../context/CartContext";
 
 export default function Checkout() {
   const navigate = useNavigate();
-
-  const {
+const RAZORPAY_KEY =
+  import.meta.env
+    .VITE_RAZORPAY_KEY_ID;
+  
+    const {
     cartItems,
     totalPrice,
     clearCart,
@@ -153,83 +156,71 @@ export default function Checkout() {
   //
   // PLACE ORDER
   //
-  const handlePlaceOrder =
-    async (e) => {
-      e.preventDefault();
+ const handlePlaceOrder =
+  async (e) => {
+    e.preventDefault();
 
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
 
-        //
-        // VALIDATION
-        //
-        if (
-          cartItems.length === 0
-        ) {
-          toast.error(
-            "Cart Is Empty"
-          );
+      if (
+        cartItems.length === 0
+      ) {
+        toast.error(
+          "Cart Is Empty"
+        );
+        return;
+      }
 
-          return;
-        }
+      const orderData = {
+        products:
+          cartItems.map(
+            (item) => ({
+              productId:
+                item.productId,
 
-        //
-        // ORDER DATA
-        //
-        const orderData = {
-          products:
-            cartItems.map(
-              (item) => ({
-                productId:
-                  item.productId,
+              title:
+                item.title,
 
-                title:
-                  item.title,
+              price:
+                item.price,
 
-                price:
-                  item.price,
+              image:
+                item.image,
 
-                image:
-                  item.image,
+              quantity:
+                item.quantity,
+            })
+          ),
 
-                quantity:
-                  item.quantity,
-              })
-            ),
+        shipping:
+          shippingData,
 
-          shipping:
-            shippingData,
+        total:
+          finalTotal,
 
-          total:
-            finalTotal,
+        paymentMethod,
+      };
 
-          paymentMethod,
-        };
-
-        //
-        // API
-        //
+      //
+      // COD
+      //
+      if (
+        paymentMethod ===
+        "COD"
+      ) {
         const { data } =
           await API.post(
             "/orders",
             orderData
           );
 
-        //
-        // SUCCESS
-        //
         toast.success(
           "Order Placed Successfully"
         );
 
-        //
-        // CLEAR CART
-        //
         await clearCart();
 
-        //
-        // NAVIGATE
-        //
         navigate(
           "/success",
           {
@@ -238,18 +229,119 @@ export default function Checkout() {
             },
           }
         );
-      } catch (error) {
-        console.log(error);
 
-        toast.error(
-          error.response?.data
-            ?.message ||
-            "Order Failed"
-        );
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
+
+      //
+      // RAZORPAY
+      //
+      const {
+        data:
+          razorpayOrder,
+      } = await API.post(
+        "/orders/razorpay/create-order",
+        {
+          amount:
+            finalTotal,
+        }
+      );
+
+      const options = {
+        key:
+          RAZORPAY_KEY,
+
+        amount:
+          razorpayOrder.amount,
+
+        currency:
+          razorpayOrder.currency,
+
+        name:
+          "Mini Shop",
+
+        description:
+          "Order Payment",
+
+        order_id:
+          razorpayOrder.id,
+
+        handler:
+          async (
+            response
+          ) => {
+            try {
+              const {
+                data,
+              } =
+                await API.post(
+                  "/orders/razorpay/verify",
+                  {
+                    ...response,
+
+                    orderData,
+                  }
+                );
+
+              toast.success(
+                "Payment Successful"
+              );
+
+              await clearCart();
+
+              navigate(
+                "/success",
+                {
+                  state:
+                    {
+                      order:
+                        data.order,
+                    },
+                }
+              );
+            } catch (error) {
+              console.log(
+                error
+              );
+
+              toast.error(
+                "Payment Verification Failed"
+              );
+            }
+          },
+
+        prefill: {
+          name:
+            shippingData.fullName,
+
+          contact:
+            shippingData.phone,
+        },
+
+        theme: {
+          color:
+            "#2563eb",
+        },
+      };
+
+      const razorpay =
+        new window.Razorpay(
+          options
+        );
+
+      razorpay.open();
+    } catch (error) {
+      console.log(error);
+
+      toast.error(
+        error.response?.data
+          ?.message ||
+          "Order Failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4 lg:px-6">
