@@ -36,7 +36,7 @@ import EditProduct from "./pages/admin/EditProduct";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCategories from "./pages/admin/AdminCategories";
-
+import AdminAI from "./pages/admin/AdminAI";
 // AUTH
 import { useAuth } from "./context/AuthContext";
 
@@ -285,6 +285,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminCategories />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/ai"
+          element={
+            <AdminRoute>
+              <AdminAI />
             </AdminRoute>
           }
         />
