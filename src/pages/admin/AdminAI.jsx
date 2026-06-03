@@ -12,128 +12,178 @@ export default function AdminAI() {
 
   const [loading, setLoading] =
     useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const { data } =
-      await API.post(
-        "/ai/inventory",
-        { command }
-      );
+      const { data } =
+        await API.post(
+          "/ai/inventory",
+          {
+            command,
+          }
+        );
 
-    setResponse(data);
+      setResponse(data);
 
-    if (data.success) {
-      toast.success(
-        data.message
-      );
+      if (data.success) {
+        toast.success(
+          data.message ||
+            "Success"
+        );
 
-      // Product actions ke baad
-      if (
-        data.message.includes(
-          "Product"
-        ) ||
-        data.message.includes(
-          "Stock"
-        )
-      ) {
-        setTimeout(() => {
-          navigate(
-            "/admin/products"
-          );
-        }, 1500);
+        if (
+          data.message?.includes(
+            "Product"
+          ) ||
+          data.message?.includes(
+            "Stock"
+          )
+        ) {
+          setTimeout(() => {
+            navigate(
+              "/admin/products"
+            );
+          }, 1500);
+        }
       }
+    } catch (error) {
+      toast.error(
+        error.response?.data
+          ?.message ||
+          "AI Command Failed"
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast.error(
-      error.response?.data
-        ?.message ||
-        "AI Command Failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6">
         AI Product Assistant
       </h1>
 
-      <textarea
-        className="border rounded-lg p-4 w-full"
-        rows="5"
-        placeholder="Add product Nike Shoes price 1999 stock 50 category Footwear brand Nike description Running Shoes"
-        value={command}
-        onChange={(e) =>
-          setCommand(
-            e.target.value
-          )
-        }
-      />
+      <div className="bg-white shadow-lg rounded-2xl p-6">
+        <textarea
+          rows="5"
+          value={command}
+          onChange={(e) =>
+            setCommand(
+              e.target.value
+            )
+          }
+          placeholder="Add a premium black Nike running shoe for men with price 2999 and stock 50"
+          className="w-full border rounded-xl p-4 outline-none"
+        />
 
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="bg-blue-600 text-white px-6 py-3 rounded-lg mt-4"
-      >
-        {loading
-          ? "Processing..."
-          : "Send"}
-      </button>
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl"
+        >
+          {loading
+            ? "Processing..."
+            : "Send Command"}
+        </button>
+      </div>
 
       {response && (
-        <div className="mt-6 border rounded-lg p-4">
-          <h2 className="font-bold text-lg mb-2">
+        <div className="mt-8 bg-white shadow-lg rounded-2xl p-6">
+          <h2 className="text-xl font-bold mb-4">
             AI Response
           </h2>
 
-          <p>
+          <p className="mb-4">
             {response.message}
           </p>
 
           {response.product && (
-            <div className="mt-4">
+            <div className="space-y-3">
+              {response.product
+                ?.images?.[0] && (
+                <img
+                  src={
+                    response
+                      .product
+                      .images[0]
+                  }
+                  alt={
+                    response
+                      .product
+                      .title
+                  }
+                  className="w-48 h-48 object-cover rounded-xl border"
+                />
+              )}
+
               <p>
-                <b>Title:</b>{" "}
+                <strong>
+                  Title:
+                </strong>{" "}
                 {
-                  response.product
+                  response
+                    .product
                     .title
                 }
               </p>
 
               <p>
-                <b>Price:</b> ₹
+                <strong>
+                  Price:
+                </strong>{" "}
+                ₹
                 {
-                  response.product
+                  response
+                    .product
                     .price
                 }
               </p>
 
               <p>
-                <b>Stock:</b>{" "}
+                <strong>
+                  Stock:
+                </strong>{" "}
                 {
-                  response.product
+                  response
+                    .product
                     .stock
                 }
               </p>
 
               <p>
-                <b>Category:</b>{" "}
+                <strong>
+                  Category:
+                </strong>{" "}
                 {
-                  response.product
+                  response
+                    .product
                     .category
                 }
               </p>
 
               <p>
-                <b>Brand:</b>{" "}
+                <strong>
+                  Brand:
+                </strong>{" "}
                 {
-                  response.product
+                  response
+                    .product
                     .brand
+                }
+              </p>
+
+              <p>
+                <strong>
+                  Description:
+                </strong>{" "}
+                {
+                  response
+                    .product
+                    .description
                 }
               </p>
             </div>
