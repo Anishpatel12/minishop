@@ -30,6 +30,12 @@ export default function AdminProducts() {
   // LOADING
   const [loading, setLoading] =
     useState(true);
+  //AI COMMAND
+  const [aiCommand, setAiCommand] =
+  useState("");
+
+const [aiLoading, setAiLoading] =
+  useState(false);
 
   // FETCH PRODUCTS
   const fetchProducts =
@@ -91,6 +97,38 @@ export default function AdminProducts() {
       }
     };
 
+    // AI COMMAND HANDLER
+    const handleAIAdd =
+  async () => {
+    try {
+      setAiLoading(true);
+
+      const { data } =
+        await API.post(
+          "/ai/inventory",
+          {
+            command:
+              aiCommand,
+          }
+        );
+
+      toast.success(
+        data.message
+      );
+
+      setAiCommand("");
+
+      fetchProducts(); // auto refresh
+    } catch (error) {
+      toast.error(
+        error.response?.data
+          ?.message ||
+          "AI Failed"
+      );
+    } finally {
+      setAiLoading(false);
+    }
+  };
   // LOADING
   if (loading) {
     return (
@@ -132,7 +170,33 @@ export default function AdminProducts() {
             Add Product
           </Link>
         </div>
+<div className="bg-white rounded-3xl shadow-xl p-6 mb-8">
+  <h2 className="text-2xl font-bold mb-4">
+    AI Product Assistant
+  </h2>
 
+  <textarea
+    rows="3"
+    value={aiCommand}
+    onChange={(e) =>
+      setAiCommand(
+        e.target.value
+      )
+    }
+    placeholder="Add product Samsung S25 price 74999 stock 20 category Mobile brand Samsung description Premium Android Phone"
+    className="w-full border rounded-xl p-4"
+  />
+
+  <button
+    onClick={handleAIAdd}
+    disabled={aiLoading}
+    className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-xl"
+  >
+    {aiLoading
+      ? "Processing..."
+      : "Run AI Command"}
+  </button>
+</div>
         {/* EMPTY */}
         {products.length === 0 ? (
           <div className="bg-white rounded-3xl shadow-xl p-16 text-center">
