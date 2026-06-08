@@ -69,14 +69,24 @@ export default function AdminAI() {
 
       <div className="bg-white shadow-lg rounded-2xl p-6">
         <textarea
-          rows="5"
+          rows="7"
           value={command}
           onChange={(e) =>
             setCommand(
               e.target.value
             )
           }
-          placeholder="Add a premium black Nike running shoe for men with price 2999 and stock 50"
+          placeholder={`Examples:
+
+Add a premium black Nike running shoe for men with price 2999 and stock 50
+
+Generate 20 Samsung mobile products
+
+Delete product Nike Air Zoom
+
+Update stock Samsung Galaxy S25 100
+
+Find product Samsung`}
           className="w-full border rounded-xl p-4 outline-none"
         />
 
@@ -101,6 +111,21 @@ export default function AdminAI() {
             {response.message}
           </p>
 
+          {/* Generated Products Count */}
+          {response.count && (
+            <div className="mb-6 p-4 bg-green-100 rounded-xl">
+              <h3 className="font-bold text-lg">
+                Products Generated
+              </h3>
+
+              <p>
+                {response.count} products
+                added successfully.
+              </p>
+            </div>
+          )}
+
+          {/* Product Details */}
           {response.product && (
             <div className="space-y-3">
               {response.product
