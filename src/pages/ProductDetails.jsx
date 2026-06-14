@@ -243,7 +243,7 @@ export default function ProductDetails() {
             </div>
 
             {/* TITLE */}
-            <h1 className="text-5xl font-bold mb-5 leading-tight">
+           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-5 leading-tight break-words">
               {product.title}
             </h1>
 
@@ -268,11 +268,11 @@ export default function ProductDetails() {
 
             {/* PRICE */}
             <div className="flex items-center gap-5 mb-8">
-              <span className="text-5xl font-bold text-blue-600">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-600">
                 ₹{product.price}
               </span>
 
-              <span className="text-2xl text-gray-400 line-through">
+              <span className="text-xl sm:text-2xl text-gray-400 line-through">
                 ₹
                 {product.oldPrice ||
                   product.price +

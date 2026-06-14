@@ -111,6 +111,99 @@ Find product Samsung`}
             {response.message}
           </p>
 
+{response.analytics && (
+  <div className="mt-6 border rounded-xl p-4 bg-yellow-50">
+    <h3 className="text-xl font-bold mb-3">
+      Inventory Analytics
+    </h3>
+
+    <p>
+      <strong>
+        Total Products:
+      </strong>{" "}
+      {
+        response.analytics
+          .totalProducts
+      }
+    </p>
+
+    <p>
+      <strong>
+        Featured Products:
+      </strong>{" "}
+      {
+        response.analytics
+          .featuredCount
+      }
+    </p>
+
+    <div className="mt-4">
+      <h4 className="font-bold">
+        Low Stock Products
+      </h4>
+
+      {response.analytics
+        .lowStock.length ===
+      0 ? (
+        <p>No low stock.</p>
+      ) : (
+        response.analytics.lowStock.map(
+          (p) => (
+            <div
+              key={p._id}
+            >
+              {p.title} (
+              {p.stock})
+            </div>
+          )
+        )
+      )}
+    </div>
+
+    <div className="mt-4">
+      <h4 className="font-bold">
+        Out Of Stock
+      </h4>
+
+      {response.analytics
+        .outOfStock.length ===
+      0 ? (
+        <p>
+          No out of stock
+          products.
+        </p>
+      ) : (
+        response.analytics.outOfStock.map(
+          (p) => (
+            <div
+              key={p._id}
+            >
+              {p.title}
+            </div>
+          )
+        )
+      )}
+    </div>
+
+    <div className="mt-4">
+      <h4 className="font-bold">
+        Restock
+        Recommendations
+      </h4>
+
+      {response.analytics.recommendations.map(
+        (r, i) => (
+          <div key={i}>
+            {r.title}
+            {" → "}
+            {r.suggestedRestock}
+            {" units"}
+          </div>
+        )
+      )}
+    </div>
+  </div>
+)}
           {/* Generated Products Count */}
           {response.count && (
             <div className="mb-6 p-4 bg-green-100 rounded-xl">

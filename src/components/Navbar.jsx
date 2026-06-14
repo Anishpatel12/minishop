@@ -118,13 +118,13 @@ const [orderCount, setOrderCount] =
   return (
     <nav className="w-full bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
-        <div className="flex items-center justify-between gap-6 h-20">
+        <div className="flex items-center justify-between gap-3 lg:gap-6 min-h-[70px] lg:h-20">
           {/* LEFT */}
           <div className="flex items-center gap-6 flex-shrink-0">
             {/* LOGO */}
             <Link
               to="/"
-              className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap"
+             className="text-xl sm:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap"
             >
               MiniStore
             </Link>
@@ -310,7 +310,7 @@ const [orderCount, setOrderCount] =
 
           {/* MOBILE MENU BUTTON */}
           <button
-            className="lg:hidden text-3xl flex-shrink-0"
+            className="lg:hidden text-2xl flex-shrink-0 p-2"
             onClick={() =>
               setMobileMenu(!mobileMenu)
             }
