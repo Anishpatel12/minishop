@@ -8,6 +8,7 @@ import {
   FaPlus,
   FaTags,
   FaSignOutAlt,
+  FaInfoCircle,
 } from "react-icons/fa";
 import {
   Link,
@@ -155,6 +156,11 @@ export default function AdminSidebar() {
       path:
         "/admin/users",
     },
+  {
+  title: "About Page",
+  icon: <FaInfoCircle />,
+  path: "/admin/about",
+},
 {
   title: "Categories",
   icon: <FaBox />,
