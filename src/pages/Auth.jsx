@@ -115,34 +115,32 @@ export default function Auth() {
     try {
       setLoading(true);
 
-      const { data } =
-        await API.post(
-          "/auth/login",
-          loginData
-        );
+     const { data } =
+  await API.post(
+    "/auth/login",
+    loginData
+  );
 
-      // SAVE TOKEN
-      localStorage.setItem(
-        "token",
-        data.token
-      );
+   console.log(
+  "LOGIN RESPONSE:",
+  data
+);
+// OTP Required
+if (
+  data.otpRequired
+) {
+  navigate(
+    "/verify-otp",
+    {
+      state: {
+        email:
+          data.email,
+      },
+    }
+  );
 
-      // LOGIN USER
-      login(data.user);
-
-      toast.success(
-        "Login Successful"
-      );
-
-      // ADMIN
-      if (
-        data.user.role ===
-        "admin"
-      ) {
-        navigate("/admin");
-      } else {
-        navigate("/profile");
-      }
+  return;
+}
     } catch (error) {
       toast.error(
         error.response?.data

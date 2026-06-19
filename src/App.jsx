@@ -27,6 +27,7 @@ import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import OrderSuccess from "./pages/OrderSuccess";
 import TrackOrder from "./pages/TrackOrder";
+import VerifyOTP from "./pages/VerifyOTP";
 
 // ADMIN PAGES
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -168,6 +169,11 @@ export default function App() {
         <Route
           path="/auth"
           element={<Auth />}
+        />
+
+        <Route
+          path="/verify-otp"
+          element={<VerifyOTP />}
         />
 
         {/* ========================= */}
